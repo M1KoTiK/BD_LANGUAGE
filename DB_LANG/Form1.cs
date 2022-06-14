@@ -19,7 +19,7 @@ namespace DB_LANG
         }
         public string getpass()
         {
-            return "";
+            return "Flaiw12356";
         }
         public void GetAllClient()
         {
@@ -87,6 +87,26 @@ namespace DB_LANG
                 Table1.Update();
             }
         }
+        public void SortByGender(int name)
+        {
+            using (SqlConnection Con = new SqlConnection($@"Data source= 10.111.105.2,1433\SQLEXPRESS;Initial Catalog=language2;User ID=20.101-10;Password={getpass()}"))
+            {
+
+                Con.Open();
+                string query = "SELECT[ID],[FirstName],[LastName],[Patronymic],[Birthday],[RegistrationDate],[Email] ,[Phone],G.[Name],[PhotoPath] " +
+                "FROM[Client] as C " +
+                "JOIN Gender as G ON G.Code = C.GenderCode " +
+                "WHERE c.GenderCode = '" + name + "'";
+
+                SqlCommand command = new SqlCommand(query, Con);
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+                Con.Close();
+                Table1.DataSource = dt;
+                Table1.Update();
+            }
+        }
         public void SearchByPhone(string name)
         {
             using (SqlConnection Con = new SqlConnection($@"Data source= 10.111.105.2,1433\SQLEXPRESS;Initial Catalog=language2;User ID=20.101-10;Password={getpass()}"))
@@ -108,10 +128,29 @@ namespace DB_LANG
             }
         }
 
+        public void FillComboBox()
+        {
+            using (SqlConnection Con = new SqlConnection($@"Data source= 10.111.105.2,1433\SQLEXPRESS;Initial Catalog=language2;User ID=20.101-10;Password={getpass()}"))
+            {
 
+                Con.Open();
+                string query = "SELECT Code,[Name] FROM Gender";
+                SqlCommand command = new SqlCommand(query, Con);
+                SqlDataReader reader = command.ExecuteReader();
+                DataTable dt = new DataTable();
+                dt.Load(reader);
+                Con.Close();
+                comboBox1.DataSource = dt;
+                comboBox1.Update();
+                comboBox1.ValueMember = "Code";
+                comboBox1.DisplayMember = "Name";
+            }
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
             GetAllClient();
+            comboBox1.Items.Insert(0, "ALL");
+            FillComboBox();
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -138,6 +177,18 @@ namespace DB_LANG
             newform.Show();
 
             
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Delete newform = new Delete();
+            newform.Show();
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+            SortByGender(comboBox1.SelectedIndex + 1);
         }
     }
 }
