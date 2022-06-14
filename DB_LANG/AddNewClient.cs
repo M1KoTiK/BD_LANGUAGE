@@ -15,7 +15,7 @@ namespace DB_LANG
     {
         public string getpass()
         {
-            return "Flaiw12356";
+            return "";
         }
         public void FillComboBox()
         {
